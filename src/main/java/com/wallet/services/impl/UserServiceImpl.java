@@ -19,4 +19,9 @@ public class UserServiceImpl implements UserService {
 		return repository.findByEmail(string);
 	}
 
+	@Override
+	public User save(User user) {
+		return repository.save(user);
+	}
+
 }
