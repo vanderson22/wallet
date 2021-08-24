@@ -1,5 +1,10 @@
 package com.wallet.repositoy;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Optional;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +19,7 @@ import com.wallet.repository.WalletRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles({ "test" })
 public class WalletRepositoryTest {
 
 	@Autowired
@@ -25,8 +30,8 @@ public class WalletRepositoryTest {
 		Wallet wallet = new Wallet();
 		wallet.setName("carteira-1");
 //		wallet.setValue(1000.0);
-		repository.save(wallet);
-
+		Wallet save = repository.save(wallet);
+        System.out.println(save);
 	}
 
 	@Test
@@ -35,9 +40,18 @@ public class WalletRepositoryTest {
 		wallet.setName("carteira-2");
 //		wallet.setValue(1000.0);
 		repository.save(wallet);
-		  		
+
 	}
-	
+
+	@Test
+	public void testFindWalletById() {
+
+		Optional<Wallet> walletOpt = repository.findById(1L);
+		Long id = walletOpt.orElseGet(() -> new Wallet()).getId();
+
+		assertTrue(id.equals(1L));
+	}
+
 	/***
 	 * Deleta tudo que o repositório gerencia DEPOIS da execução do test.
 	 */
