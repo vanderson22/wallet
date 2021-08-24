@@ -1,13 +1,13 @@
 package com.wallet.repositoy;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,20 +25,20 @@ public class WalletRepositoryTest {
 	@Autowired
 	WalletRepository repository;
 
-	@Before
+	@BeforeAll
 	public void setUp() {
 		Wallet wallet = new Wallet();
 		wallet.setName("carteira-1");
-//		wallet.setValue(1000.0);
+		wallet.setValue(new BigDecimal(100000.00032));
 		Wallet save = repository.save(wallet);
-        System.out.println(save);
+		System.out.println("Após salvar : [" + save + "]");
 	}
 
 	@Test
 	public void testCreateWallet() {
 		Wallet wallet = new Wallet();
 		wallet.setName("carteira-2");
-//		wallet.setValue(1000.0);
+		wallet.setValue(new BigDecimal(100000.00032));
 		repository.save(wallet);
 
 	}
@@ -53,9 +53,9 @@ public class WalletRepositoryTest {
 	}
 
 	/***
-	 * Deleta tudo que o repositório gerencia DEPOIS da execução do test.
+	 * Deleta tudo que o repositório gerencia DEPOIS da execução de TODOS os testes.
 	 */
-	@After
+	@AfterAll
 	public void tearDown() {
 		repository.deleteAll();
 	}
