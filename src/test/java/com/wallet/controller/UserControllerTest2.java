@@ -58,7 +58,8 @@ public class UserControllerTest2 {
 				 							.accept(MediaType.ALL) )
 		       .andExpect(jsonPath("$.data.id").value(ID))	
 		       .andExpect(jsonPath("$.data.name").value(NAME))		       
-		       .andExpect(jsonPath("$.data.cpf").value(CPF))		       
+		       .andExpect(jsonPath("$.data.cpf").value(CPF))
+		       .andExpect(jsonPath("$.data.password").doesNotExist())	
 			   .andExpect(status().isCreated())
 			   ;
 	         
@@ -94,8 +95,8 @@ public class UserControllerTest2 {
 				 							.contentType(MediaType.APPLICATION_JSON)
 				 							.accept(MediaType.ALL) )
 			   .andExpect(status().isBadRequest()) 
-			   .andExpect(jsonPath("$.errors.[0]").value("Email inválido"))
-			   .andExpect(jsonPath("$.errors.[1]").value("Nome deve conter entre 3 e 50 caracteres"));
+			   .andExpect(jsonPath("$.errors.[1]").value("Email inválido"))
+			   .andExpect(jsonPath("$.errors.[0]").value("Nome deve conter entre 3 e 50 caracteres"));
 	         
 	 }
 

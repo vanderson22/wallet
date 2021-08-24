@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import com.wallet.models.User;
 import com.wallet.models.dto.UserDto;
 import com.wallet.models.response.Response;
 import com.wallet.services.UserService;
+import com.wallet.util.Bcrypt;
 
 @RestController
 @RequestMapping("/user")
@@ -26,6 +28,12 @@ public class UserController {
 	@Autowired
 	private UserService service;
 
+	@GetMapping
+	public  ResponseEntity<Response<UserDto>> findAll(){
+				service.findAll();
+		return  
+	}
+	 
 	@PostMapping
 	public ResponseEntity<Response<UserDto>> create(@Valid  @RequestBody UserDto dto, BindingResult result) {
 		
@@ -46,8 +54,8 @@ public class UserController {
 		User u = new User();
 		u.setEmail(dto.getEmail());
 		u.setName(dto.getName());
-		u.setPassword(dto.getPassword());
-		u.setCpf(dto.getCpf());
+		u.setPassword(Bcrypt.getHash(dto.getPassword()));
+		u.setCpf( dto.getCpf());
 		
 		return u;
 	}
@@ -56,7 +64,7 @@ public class UserController {
 		dto.setId(u.getId());
 		dto.setEmail(u.getEmail());
 		dto.setName(u.getName());
-		dto.setPassword(u.getPassword());
+//		dto.setPassword(u.getPassword()); não retornar o password na resposta.
 		dto.setCpf(u.getCpf());
 		return dto;
 	}

@@ -7,9 +7,12 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Data;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto implements Serializable {
 
 	/**
@@ -21,6 +24,7 @@ public class UserDto implements Serializable {
 	
 	@NotNull
 	@Length(min = 3 , message = "A senha deve conter no minimo $1 caracteres") 
+	 
 	private String password;
 	@Length(min = 3, max = 50, message = "Nome deve conter entre 3 e 50 caracteres")
 	private String name;

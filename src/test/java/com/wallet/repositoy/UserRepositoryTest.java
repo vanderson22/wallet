@@ -3,6 +3,7 @@ package com.wallet.repositoy;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.After;
@@ -64,5 +65,13 @@ public class UserRepositoryTest {
 
 		assertTrue(response.isPresent());
 		assertTrue(response.get().getEmail().equals(EMAIL));
+	}
+	
+	@Test
+	public void testFindAll() {
+		   
+		List<User> all = repository.findAll();
+		
+		assertTrue(!all.isEmpty());
 	}
 }
