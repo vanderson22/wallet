@@ -30,8 +30,8 @@ public class UserController {
 
 	@GetMapping
 	public  ResponseEntity<Response<UserDto>> findAll(){
-				service.findAll();
-		return  
+//				service.findAll();
+		return   null;
 	}
 	 
 	@PostMapping

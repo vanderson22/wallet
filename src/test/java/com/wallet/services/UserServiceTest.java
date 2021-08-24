@@ -16,7 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.wallet.models.User;
-import com.wallet.repositoy.UserRepository;
+import com.wallet.repository.UserRepository;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
