@@ -10,7 +10,7 @@ import javax.persistence.Id;
 
 import lombok.Data;
 
-@Entity
+@Entity(name = "users")
 @Data
 public class User implements Serializable{
 
@@ -28,7 +28,6 @@ public class User implements Serializable{
     private String name;
 	@Column(nullable = false)
     private String email;
-	
 	@Column(nullable = false)
     private String cpf;
 	

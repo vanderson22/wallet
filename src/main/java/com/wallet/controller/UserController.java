@@ -1,5 +1,8 @@
 package com.wallet.controller;
 
+import javax.validation.Valid;
+
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,14 +21,22 @@ import com.wallet.services.UserService;
 @RequestMapping("/user")
 public class UserController {
  
+	public static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(UserController.class);
+	
 	@Autowired
 	private UserService service;
 
 	@PostMapping
-	public ResponseEntity<Response<UserDto>> create(/*@Valid */ @RequestBody UserDto dto, BindingResult result) {
+	public ResponseEntity<Response<UserDto>> create(@Valid  @RequestBody UserDto dto, BindingResult result) {
 		
 		  Response<UserDto> response = new Response<UserDto>();
-		  
+		
+		  if(result.hasErrors()) {
+			   result
+			   			.getAllErrors()
+			   			.forEach( e -> { response.getErrors().add(e.getDefaultMessage()) ;    });
+			   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		  }
 		 User s = service.save(convertDtoToUser(dto));
 		 response.setData(convertUserToDto(s));
 		 return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -36,15 +47,17 @@ public class UserController {
 		u.setEmail(dto.getEmail());
 		u.setName(dto.getName());
 		u.setPassword(dto.getPassword());
+		u.setCpf(dto.getCpf());
 		
 		return u;
 	}
 	public UserDto convertUserToDto(User u) {
 		UserDto dto = new UserDto();
+		dto.setId(u.getId());
 		dto.setEmail(u.getEmail());
 		dto.setName(u.getName());
 		dto.setPassword(u.getPassword());
-		
+		dto.setCpf(u.getCpf());
 		return dto;
 	}
 }
