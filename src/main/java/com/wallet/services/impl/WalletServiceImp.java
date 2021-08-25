@@ -1,5 +1,7 @@
 package com.wallet.services.impl;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,11 @@ public class WalletServiceImp implements WalletService {
 	public Wallet save(Wallet wallet) {
 
 		return repository.save(wallet);
+	}
+
+	@Override
+	public Optional<Wallet> findById(Long wallet) {
+		return repository.findById(wallet);
 	}
 
 }

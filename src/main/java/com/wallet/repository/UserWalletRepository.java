@@ -1,4 +1,4 @@
-package com.wallet.repositoy;
+package com.wallet.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

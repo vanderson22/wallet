@@ -3,13 +3,10 @@ package com.wallet.repositoy;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +17,7 @@ import com.wallet.models.User;
 import com.wallet.models.UserWallet;
 import com.wallet.models.Wallet;
 import com.wallet.repository.UserRepository;
+import com.wallet.repository.UserWalletRepository;
 import com.wallet.repository.WalletRepository;
 import com.wallet.util.Bcrypt;
 

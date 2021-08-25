@@ -1,5 +1,6 @@
 package com.wallet.repositoy;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -13,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.wallet.models.User;
@@ -25,6 +25,8 @@ import com.wallet.repository.UserRepository;
 public class UserRepositoryTest {
 
 	private static final String EMAIL = "setup@teste.com";
+	private static final Long ID = 1L;
+	
 	@Autowired
 	UserRepository repository;
 
@@ -68,6 +70,22 @@ public class UserRepositoryTest {
 		assertTrue(response.isPresent());
 		assertTrue(response.get().getEmail().equals(EMAIL));
 	}
+	
+	@Test
+	public void testFindById() {
+		User u = new User();
+		u.setName("Set up user");
+		u.setPassword("123456");
+		u.setEmail(EMAIL);
+		u.setCpf("123123123-12");
+
+		User save = repository.save(u);
+		
+		Optional<User> response = repository.findById(save.getId());
+
+		assertEquals( save.getId() , response.get().getId());
+	}
+	
 	
 	@Test
 	public void testFindAll() {
