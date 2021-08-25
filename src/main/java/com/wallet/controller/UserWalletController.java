@@ -36,20 +36,29 @@ public class UserWalletController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Response<UserWallet>> create(@Valid @RequestBody UserWalletDto dto, BindingResult errors) {
+	public ResponseEntity<Response<UserWalletDto>> create(@Valid @RequestBody UserWalletDto dto, BindingResult errors) {
 
 		UserWallet userWallet = service.save(convertDtoToEntity(dto));
 
-		Response<UserWallet> resp = new Response<>();
+		Response<UserWalletDto> resp = new Response<>();
 		if (errors.hasErrors()) {
 			errors.getAllErrors().forEach(e -> resp.getErrors().add(e.getDefaultMessage()));
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp);
 		}
 		
-		resp.setData(userWallet);
+		resp.setData(convertEntityToDto(userWallet));
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
+	}
+
+	private UserWalletDto convertEntityToDto(UserWallet userWallet) {
+		    UserWalletDto dto = new UserWalletDto();
+		    dto.setId(userWallet.getId());
+		    dto.setUser(userWallet.getUsers().getId());
+		    dto.setWallet(userWallet.getWallet().getId());
+		     
+		return dto;
 	}
 
 	public UserWallet convertDtoToEntity(UserWalletDto dto) {

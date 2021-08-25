@@ -25,8 +25,7 @@ import com.wallet.repository.UserRepository;
 public class UserRepositoryTest {
 
 	private static final String EMAIL = "setup@teste.com";
-	private static final Long ID = 1L;
-	
+
 	@Autowired
 	UserRepository repository;
 
@@ -70,7 +69,7 @@ public class UserRepositoryTest {
 		assertTrue(response.isPresent());
 		assertTrue(response.get().getEmail().equals(EMAIL));
 	}
-	
+
 	@Test
 	public void testFindById() {
 		User u = new User();
@@ -80,18 +79,17 @@ public class UserRepositoryTest {
 		u.setCpf("123123123-12");
 
 		User save = repository.save(u);
-		
+
 		Optional<User> response = repository.findById(save.getId());
 
-		assertEquals( save.getId() , response.get().getId());
+		assertEquals(save.getId(), response.get().getId());
 	}
-	
-	
+
 	@Test
 	public void testFindAll() {
-		   
+
 		List<User> all = repository.findAll();
-		
+
 		assertTrue(!all.isEmpty());
 	}
 }
