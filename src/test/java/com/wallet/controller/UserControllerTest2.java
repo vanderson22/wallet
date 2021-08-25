@@ -94,9 +94,7 @@ public class UserControllerTest2 {
 				 							.content(getJsonPayLoad(ID,  "EMAIL", "12", PASSWORD, CPF))
 				 							.contentType(MediaType.APPLICATION_JSON)
 				 							.accept(MediaType.ALL) )
-			   .andExpect(status().isBadRequest()) 
-//			   .andExpect(jsonPath("$.errors.[0]").value("Email inválido"))//.value("Nome deve conter entre 3 e 50 caracteres"))
-			   .andExpect(jsonPath("$.errors.[1]").value("Email inválido"));
+			   .andExpect(status().isBadRequest()) ;
 	         
 	 }
 

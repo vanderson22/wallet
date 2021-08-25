@@ -3,6 +3,10 @@ package com.wallet.controller;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigDecimal;
+import java.util.Optional;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
@@ -23,7 +27,9 @@ import com.wallet.models.User;
 import com.wallet.models.UserWallet;
 import com.wallet.models.Wallet;
 import com.wallet.models.dto.UserWalletDto;
+import com.wallet.services.UserService;
 import com.wallet.services.UserWalletService;
+import com.wallet.services.WalletService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -33,17 +39,32 @@ public class WalletControllerTest {
 
 	 @MockBean
 	 UserWalletService service;
+	 @MockBean
+	 WalletService wService;
+	 @MockBean
+	 UserService uService;
 	 
 	 @Autowired
 	 MockMvc mvc;  
 	 
+	  
 	 
 	 @Test
 	 public void TestSaveUserWallet() throws JsonProcessingException, Exception {
-		 BDDMockito
-         .given(service.save(Mockito.any(UserWallet.class)))
-         .willReturn(getMockUserWallet());
-		  
+		  BDDMockito
+	         .given(uService.findById(Mockito.any(Long.class)))
+	         .willReturn( Optional.of( getMockUser() ));
+			   
+			 BDDMockito
+	         .given(wService.findById(Mockito.any(Long.class)))
+	         .willReturn(Optional.of( getMockWallet() ));
+			 
+			 
+			 BDDMockito
+	         .given(service.save(Mockito.any(UserWallet.class)))
+	         .willReturn(getMockUserWallet());
+			 
+			 
 		  mvc.perform( MockMvcRequestBuilders
 				  					.post("/user_wallets")
 				  					.content(getJsonPayLoad(getMockUser() , getMockWallet()))
@@ -56,9 +77,20 @@ public class WalletControllerTest {
 
 	 @Test
 	 public void TestSaveValidDto() throws JsonProcessingException, Exception {
+		  BDDMockito
+         .given(uService.findById(Mockito.any(Long.class)))
+         .willReturn( Optional.of( getMockUser() ));
+		   
+		 BDDMockito
+         .given(wService.findById(Mockito.any(Long.class)))
+         .willReturn(Optional.of( getMockWallet() ));
+		 
+		 
 		 BDDMockito
          .given(service.save(Mockito.any(UserWallet.class)))
          .willReturn(getMockUserWallet());
+		 
+	
 		 
 		  mvc.perform( MockMvcRequestBuilders
 				  					.post("/user_wallets")

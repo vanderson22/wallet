@@ -52,7 +52,7 @@ public class UserWalletController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 	}
 
-	private UserWallet convertDtoToEntity(UserWalletDto dto) {
+	public UserWallet convertDtoToEntity(UserWalletDto dto) {
 		UserWallet userWallet = new UserWallet();
 		User user     =  userService.findById(dto.getUser() ).get()  ;
 		Wallet wallet =  walletService.findById(dto.getWallet() ).get();
