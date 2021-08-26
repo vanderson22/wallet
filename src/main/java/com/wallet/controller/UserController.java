@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,9 @@ public class UserController {
 	
 	@Autowired
 	private UserService service;
+	
+	 
+	BCryptPasswordEncoder bp = new BCryptPasswordEncoder();
 
 	@GetMapping
 	public  ResponseEntity<Response<UserDto>> findAll(){
@@ -53,7 +57,7 @@ public class UserController {
 		User u = new User();
 		u.setEmail(dto.getEmail());
 		u.setName(dto.getName());
-		u.setPassword(Bcrypt.getHash(dto.getPassword()));
+		u.setPassword(Bcrypt.getHash(dto.getPassword() , bp));
 		u.setCpf( dto.getCpf());
 		
 		return u;

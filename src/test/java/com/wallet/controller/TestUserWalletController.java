@@ -1,9 +1,11 @@
 package com.wallet.controller;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.math.BigDecimal;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +23,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wallet.models.User;
+import com.wallet.models.UserWallet;
 import com.wallet.models.Wallet;
-import com.wallet.models.dto.WalletDto;
+import com.wallet.models.dto.UserWalletDto;
+import com.wallet.services.UserService;
+import com.wallet.services.UserWalletService;
 import com.wallet.services.WalletService;
 
 @RunWith(SpringRunner.class)
@@ -31,49 +37,165 @@ import com.wallet.services.WalletService;
 @ActiveProfiles("test")
 public class TestUserWalletController {
 
+	 private static final String VALID_USER = "Não foi possível encontrar carteira ou usuário informados";
+	@MockBean
+	 UserWalletService service;
 	 @MockBean
-	 WalletService service;
+	 WalletService wService;
+	 @MockBean
+	 UserService uService;
 	 
 	 @Autowired
 	 MockMvc mvc;  
 	 
+	 @Autowired
+	 UserWalletController uWcontroller;
+	 
+	  
+	 
 	 @Test
-	 public void TestCreateWallet() throws JsonProcessingException, Exception {
-		 BDDMockito
-         .given(service.save(Mockito.any(Wallet.class)))
-         .willReturn(getMockWallet());
-		 
+	 public void Testcreate() throws JsonProcessingException, Exception {
+		  BDDMockito
+	         .given(uService.findById(Mockito.any(Long.class)))
+	         .willReturn( Optional.of( getMockUser(1L) ));
+			   
+			 BDDMockito
+	         .given(wService.findById(Mockito.any(Long.class)))
+	         .willReturn(Optional.of( getMockWallet() ));
+			 
+			 
+			 BDDMockito
+	         .given(service.save(Mockito.any(UserWallet.class)))
+	         .willReturn(getMockUserWallet(1L , 1L));
+			 
+			 
 		  mvc.perform( MockMvcRequestBuilders
-				  					.post("/wallets")
-				  					.content(getJsonPayLoad( "carteira-1" , new BigDecimal(1032.22)))
+				  					.post("/user_wallets")
+				  					.content(getJsonPayLoad(getMockUser(1L) , getMockWallet()))
 				  					.contentType(MediaType.APPLICATION_JSON)
-				  					.accept(MediaType.ALL))
+				  					.accept(MediaType.ALL)
+				  					)
 		     .andExpect(status().isCreated())
 		     .andExpect( jsonPath("$.data.id").value(1L));
 		 
 	 }
 
-
-	private Wallet getMockWallet() {
-		 Wallet dto = new Wallet();
-		 dto.setId(1L);
-		 dto.setName("carteira-1");
-		 dto.setValue( new BigDecimal(1032.22));
+	 @Test
+	 public void TestSaveValidDto() throws JsonProcessingException, Exception {
+		  BDDMockito
+         .given(uService.findById(Mockito.any(Long.class)))
+         .willReturn( Optional.of( getMockUser(10L) )); 
+		  //Precisa devolver um valor diferente na busca para dar conflito. e BadRequest no custom validator.
+		   
+		 BDDMockito
+         .given(wService.findById(Mockito.any(Long.class)))
+         .willReturn(Optional.of( getMockWallet() ));
+		 
+		 
+		 BDDMockito
+         .given(service.save(Mockito.any(UserWallet.class)))
+         .willReturn(getMockUserWallet(300L , 1L));
+		 
+	
+		 
+		  mvc.perform( MockMvcRequestBuilders
+				  					.post("/user_wallets")
+				  					.content(getJsonPayLoad(getMockUser(300L) , getMockWallet()))
+				  					.contentType(MediaType.APPLICATION_JSON)
+				  					.accept(MediaType.ALL))
+		     .andExpect(status().isBadRequest())
+		     .andExpect(jsonPath("$.errors[0]").value( VALID_USER));
+		 
+	 }
+ 
+	 @Test
+	 public void TestConvertDtoToWallet() {
+		    UserWalletDto userWalletDto = new UserWalletDto();
+			userWalletDto.setUser(1l);
+			userWalletDto.setWallet(1L);
+			
+			  //mock os findBy id dentro da classe
+			      BDDMockito
+		         .given(uService.findById(Mockito.any(Long.class)))
+		         .willReturn( Optional.of( getMockUser(1L) )); 
+				   
+				 BDDMockito
+		         .given(wService.findById(Mockito.any(Long.class)))
+		         .willReturn(Optional.of( getMockWallet() ));
+			
+		 UserWallet entity = uWcontroller.convertDtoToEntity(userWalletDto);
+		 assertNotNull(entity);
+		 assertNotNull(entity.getWallet());
+		 assertNotNull(entity.getUsers());
+	 }
+	 
+	 @Test
+	 public void TestConvertDtoToWalletNullUser() {
+		    UserWalletDto userWalletDto = new UserWalletDto();
+			userWalletDto.setUser(1l);
+			userWalletDto.setWallet(1L);
+			
+			  //mock os findBy id dentro da classe
+			      BDDMockito
+		         .given(uService.findById(Mockito.any(Long.class)))
+		         .willReturn( Optional.empty()); 
+				   
+				 BDDMockito
+		         .given(wService.findById(Mockito.any(Long.class)))
+		         .willReturn(Optional.of( getMockWallet() ));
+			
+		 UserWallet entity = uWcontroller.convertDtoToEntity(userWalletDto);
+		 assertNotNull(entity);
+		 assertNotNull(entity.getWallet());
+		 assertNull(entity.getUsers());
+	 }
+	 
+	 
+	private UserWallet getMockUserWallet(Long userId , Long walletID) {
+		UserWallet uw = new UserWallet();
+		uw.setId(1L);
+		User u = new User();
+		u.setId(userId);
 		
-		 return dto;
+		Wallet w = new Wallet();
+		w.setId(walletID);
+    
+		uw.setUsers(u);
+        uw.setWallet(w);
+		
+		 return uw;
+	}
+
+	
+	private Wallet getMockWallet() {
+		 
+		Wallet w = new Wallet();
+		w.setId(1L);
+       
+		 return w;
+	}
+	
+	private User getMockUser(Long id) {
+		 
+		User w = new User();
+		w.setId(id);
+       
+		 return w;
 	}
 
 
-	private byte[] getJsonPayLoad(String nome, BigDecimal value) throws JsonProcessingException {
-		 WalletDto dto = new WalletDto();
-		 dto.setName(nome);
-		 dto.setValue(value);
+	
+
+	private byte[] getJsonPayLoad( User user , Wallet wallet) throws JsonProcessingException {
+		UserWalletDto userWalletDto = new UserWalletDto();
+		userWalletDto.setUser(user.getId());
+		userWalletDto.setWallet(wallet.getId());
 		 
 		 ObjectMapper om = new ObjectMapper();
-         String json = om.writeValueAsString(dto);		  
-            
-         System.out.println(json); 
-         return json.getBytes();    
+		 String json = om.writeValueAsString(userWalletDto);	
+		
+		return json.getBytes();
+           
 	}
 	
 }

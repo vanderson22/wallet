@@ -12,9 +12,7 @@ public class Bcrypt {
 	private Bcrypt() {
 	}
 
-	public static String getHash(String password) {
-
-		BCryptPasswordEncoder bp = new BCryptPasswordEncoder();
+	public static String getHash(String password , BCryptPasswordEncoder bp) {
 		return bp.encode(password);
 	}
 

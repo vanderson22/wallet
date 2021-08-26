@@ -1,6 +1,7 @@
 package com.wallet.repositoy;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -90,5 +91,13 @@ public class UserRepositoryTest {
 		List<User> all = repository.findAll();
 
 		assertTrue(!all.isEmpty());
+	}
+	
+	@Test
+	public void testFindByIdNotFound() {
+
+		Optional<User> all = repository.findById(5L);
+
+		assertFalse(all.isPresent());
 	}
 }

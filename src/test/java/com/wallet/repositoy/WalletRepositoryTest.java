@@ -1,6 +1,7 @@
 package com.wallet.repositoy;
 
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
@@ -40,7 +41,9 @@ public class WalletRepositoryTest {
 		Wallet wallet = new Wallet();
 		wallet.setName("carteira-2");
 		wallet.setValue(new BigDecimal(100000.00032));
-		repository.save(wallet);
+		Wallet saved = repository.save(wallet);
+		
+		assertEquals(wallet.getName(), saved.getName());
 
 	}
 

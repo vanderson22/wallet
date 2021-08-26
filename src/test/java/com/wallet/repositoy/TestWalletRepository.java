@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -24,7 +25,7 @@ import com.wallet.util.Bcrypt;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles({ "test" })
-public class UserWalletRepositoryTest {
+public class TestWalletRepository {
 
 	private static final String CPF = "123456789-12";
 
@@ -34,6 +35,8 @@ public class UserWalletRepositoryTest {
 
 	@Autowired
 	WalletRepository walletRepository;
+
+	BCryptPasswordEncoder bp;
 
 	@Autowired
 	UserRepository userRepository;
@@ -47,6 +50,7 @@ public class UserWalletRepositoryTest {
 
 	@Before
 	public void setUp() {
+		bp = new BCryptPasswordEncoder();
 		Wallet wallet = new Wallet();
 		wallet.setName("carteira-1");
 		wallet.setValue(new BigDecimal(100000.00032));
@@ -54,7 +58,7 @@ public class UserWalletRepositoryTest {
 		User user = new User();
 		user.setEmail(EMAIL);
 		user.setName(USUARIO_1);
-		user.setPassword(Bcrypt.getHash("SENHA"));
+		user.setPassword(Bcrypt.getHash("SENHA", bp));
 		user.setCpf(CPF);
 
 		save = userRepository.save(user);
@@ -74,8 +78,8 @@ public class UserWalletRepositoryTest {
 
 		UserWallet uWalletSave = userWalletRepository.save(userWallet);
 
-		assertEquals(save.getId() , uWalletSave.getUsers().getId() ) ;
-		assertEquals(save2.getId() , uWalletSave.getWallet().getId() ) ;
+		assertEquals(save.getId(), uWalletSave.getUsers().getId());
+		assertEquals(save2.getId(), uWalletSave.getWallet().getId());
 	}
 
 	@After
