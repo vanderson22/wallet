@@ -30,19 +30,18 @@ public class UserController {
 
 	@GetMapping
 	public  ResponseEntity<Response<UserDto>> findAll(){
-//				service.findAll();
 		return   null;
 	}
 	 
 	@PostMapping
 	public ResponseEntity<Response<UserDto>> create(@Valid  @RequestBody UserDto dto, BindingResult result) {
 		
-		  Response<UserDto> response = new Response<UserDto>();
+		  Response<UserDto> response = new Response<>();
 		
 		  if(result.hasErrors()) {
 			   result
 			   			.getAllErrors()
-			   			.forEach( e -> { response.getErrors().add(e.getDefaultMessage()) ;    });
+			   			.forEach( e ->  response.getErrors().add(e.getDefaultMessage()));
 			   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		  }
 		 User s = service.save(convertDtoToUser(dto));

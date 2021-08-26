@@ -28,7 +28,7 @@ import com.wallet.services.UserService;
 @ActiveProfiles("test")
 //new
 @AutoConfigureMockMvc
-public class UserControllerTest2 {
+public class TestUserController {
 
 	private static final Long ID = 1L;
 	private static final String PASSWORD = "123@#ASE!@";

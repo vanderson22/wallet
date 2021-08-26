@@ -29,12 +29,11 @@ public class WalletController {
 	@PostMapping
 	public ResponseEntity<Response<WalletDto>> create(@Valid @RequestBody WalletDto dto, BindingResult result) {
 
-		Response<WalletDto> response = new Response<WalletDto>();
+		Response<WalletDto> response = new Response<>();
 
 		if (result.hasErrors()) {
-			result.getAllErrors().forEach(e -> {
-				response.getErrors().add(e.getDefaultMessage());
-			});
+			result.getAllErrors().forEach(e -> 
+				response.getErrors().add(e.getDefaultMessage()));
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
 		Wallet s = service.save(convertDtoToWallet(dto));

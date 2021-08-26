@@ -1,6 +1,6 @@
 package com.wallet.repositoy;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 
@@ -74,8 +74,8 @@ public class UserWalletRepositoryTest {
 
 		UserWallet uWalletSave = userWalletRepository.save(userWallet);
 
-		assertTrue(save.getId().equals(uWalletSave.getUsers().getId()));
-		assertTrue(save2.getId().equals(uWalletSave.getWallet().getId()));
+		assertEquals(save.getId() , uWalletSave.getUsers().getId() ) ;
+		assertEquals(save2.getId() , uWalletSave.getWallet().getId() ) ;
 	}
 
 	@After

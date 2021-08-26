@@ -33,7 +33,7 @@ import com.wallet.services.WalletService;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class WalletControllerTest {
+public class TestWalletController {
 
 	 private static final String VALID_USER = "Não foi possível encontrar carteira ou usuário informados";
 	@MockBean

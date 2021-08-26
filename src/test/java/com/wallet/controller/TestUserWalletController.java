@@ -29,7 +29,7 @@ import com.wallet.services.WalletService;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class UserWalletControllerTest {
+public class TestUserWalletController {
 
 	 @MockBean
 	 WalletService service;
