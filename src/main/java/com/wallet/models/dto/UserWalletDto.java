@@ -4,9 +4,12 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
+import com.wallet.models.annotation.UserWalletInsert;
+
 import lombok.Data;
 
 @Data
+@UserWalletInsert
 public class UserWalletDto  implements Serializable{/**
 	 * 
 	 */

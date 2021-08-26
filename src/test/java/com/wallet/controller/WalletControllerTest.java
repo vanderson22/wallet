@@ -35,7 +35,8 @@ import com.wallet.services.WalletService;
 @ActiveProfiles("test")
 public class WalletControllerTest {
 
-	 @MockBean
+	 private static final String VALID_USER = "Não foi possível encontrar carteira ou usuário informados";
+	@MockBean
 	 UserWalletService service;
 	 @MockBean
 	 WalletService wService;
@@ -51,7 +52,7 @@ public class WalletControllerTest {
 	 public void TestSaveUserWallet() throws JsonProcessingException, Exception {
 		  BDDMockito
 	         .given(uService.findById(Mockito.any(Long.class)))
-	         .willReturn( Optional.of( getMockUser() ));
+	         .willReturn( Optional.of( getMockUser(1L) ));
 			   
 			 BDDMockito
 	         .given(wService.findById(Mockito.any(Long.class)))
@@ -60,14 +61,15 @@ public class WalletControllerTest {
 			 
 			 BDDMockito
 	         .given(service.save(Mockito.any(UserWallet.class)))
-	         .willReturn(getMockUserWallet());
+	         .willReturn(getMockUserWallet(1L , 1L));
 			 
 			 
 		  mvc.perform( MockMvcRequestBuilders
 				  					.post("/user_wallets")
-				  					.content(getJsonPayLoad(getMockUser() , getMockWallet()))
+				  					.content(getJsonPayLoad(getMockUser(1L) , getMockWallet()))
 				  					.contentType(MediaType.APPLICATION_JSON)
-				  					.accept(MediaType.ALL))
+				  					.accept(MediaType.ALL)
+				  					)
 		     .andExpect(status().isCreated())
 		     .andExpect( jsonPath("$.data.id").value(1L));
 		 
@@ -77,7 +79,8 @@ public class WalletControllerTest {
 	 public void TestSaveValidDto() throws JsonProcessingException, Exception {
 		  BDDMockito
          .given(uService.findById(Mockito.any(Long.class)))
-         .willReturn( Optional.of( getMockUser() ));
+         .willReturn( Optional.of( getMockUser(10L) )); 
+		  //Precisa devolver um valor diferente na busca para dar conflito. e BadRequest no custom validator.
 		   
 		 BDDMockito
          .given(wService.findById(Mockito.any(Long.class)))
@@ -86,30 +89,30 @@ public class WalletControllerTest {
 		 
 		 BDDMockito
          .given(service.save(Mockito.any(UserWallet.class)))
-         .willReturn(getMockUserWallet());
+         .willReturn(getMockUserWallet(300L , 1L));
 		 
 	
 		 
 		  mvc.perform( MockMvcRequestBuilders
 				  					.post("/user_wallets")
-				  					.content(getJsonPayLoad(getMockUser() , getMockWallet()))
+				  					.content(getJsonPayLoad(getMockUser(300L) , getMockWallet()))
 				  					.contentType(MediaType.APPLICATION_JSON)
 				  					.accept(MediaType.ALL))
-		     .andExpect(status().isCreated())
-		     .andExpect( jsonPath("$.data.id").value(1L));
+		     .andExpect(status().isBadRequest())
+		     .andExpect(jsonPath("$.errors[0]").value( VALID_USER));
 		 
 	 }
  
 	 
 	 
-	private UserWallet getMockUserWallet() {
+	private UserWallet getMockUserWallet(Long userId , Long walletID) {
 		UserWallet uw = new UserWallet();
 		uw.setId(1L);
 		User u = new User();
-		u.setId(1L);
+		u.setId(userId);
 		
 		Wallet w = new Wallet();
-		w.setId(1L);
+		w.setId(walletID);
     
 		uw.setUsers(u);
         uw.setWallet(w);
@@ -126,10 +129,10 @@ public class WalletControllerTest {
 		 return w;
 	}
 	
-	private User getMockUser() {
+	private User getMockUser(Long id) {
 		 
 		User w = new User();
-		w.setId(1L);
+		w.setId(id);
        
 		 return w;
 	}
@@ -139,8 +142,8 @@ public class WalletControllerTest {
 
 	private byte[] getJsonPayLoad( User user , Wallet wallet) throws JsonProcessingException {
 		UserWalletDto userWalletDto = new UserWalletDto();
-		userWalletDto.setUser(1L);
-		userWalletDto.setWallet(1L);
+		userWalletDto.setUser(user.getId());
+		userWalletDto.setWallet(wallet.getId());
 		 
 		 ObjectMapper om = new ObjectMapper();
 		 String json = om.writeValueAsString(userWalletDto);	
