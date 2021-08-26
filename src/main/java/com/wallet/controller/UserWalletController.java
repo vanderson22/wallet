@@ -1,5 +1,7 @@
 package com.wallet.controller;
 
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,9 +66,13 @@ public class UserWalletController {
 
 	public UserWallet convertDtoToEntity(UserWalletDto dto) {
 		UserWallet userWallet = new UserWallet();
-		User user     =  userService.findById(dto.getUser() ).get()  ;
-		Wallet wallet =  walletService.findById(dto.getWallet() ).get();
-
+		
+		Optional<User> optional = userService.findById(dto.getUser() );
+		User user     =    optional.isPresent() ? optional.get() : null;
+		
+		Optional<Wallet> optional2 = walletService.findById(dto.getWallet() ) ;
+		Wallet wallet =   optional2.isPresent() ? optional2.get() : null;
+		     
 		userWallet.setUsers(user);
 		userWallet.setWallet(wallet);
 

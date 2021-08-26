@@ -66,8 +66,7 @@ public class UserRepositoryTest {
 	public void testFindByEmail() {
 		Optional<User> response = repository.findByEmail(EMAIL);
 
-		assertTrue(response.isPresent());
-		assertTrue(response.get().getEmail().equals(EMAIL));
+		assertEquals(EMAIL ,response.get().getEmail()  );
 	}
 
 	@Test

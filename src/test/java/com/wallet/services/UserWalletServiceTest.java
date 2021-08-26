@@ -1,5 +1,6 @@
 package com.wallet.services;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -91,8 +92,8 @@ public class UserWalletServiceTest {
 		System.out.println(uwSaved);
 		
 		assertNotNull(uwSaved);
-		assertTrue(uWallet.getUsers().getId().equals(uwSaved.getUsers().getId()));
-		assertTrue(uWallet.getWallet().getId().equals(uwSaved.getWallet().getId()));
+		assertEquals(uWallet.getUsers().getId() , uwSaved.getUsers().getId());
+		assertEquals(uWallet.getWallet().getId() , uwSaved.getWallet().getId());
 	
 	}
 	

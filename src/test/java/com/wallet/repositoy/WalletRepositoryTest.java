@@ -1,6 +1,7 @@
 package com.wallet.repositoy;
 
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -49,7 +50,7 @@ public class WalletRepositoryTest {
 		Optional<Wallet> walletOpt = repository.findById(1L);
 		Long id = walletOpt.orElseGet(() -> new Wallet()).getId();
 
-		assertTrue(id.equals(1L));
+		assertNotNull( id) ;
 	}
 
 	/***
