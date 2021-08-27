@@ -32,7 +32,7 @@ public class WalletItem {
 
 	@NotNull
 	@JoinColumn(referencedColumnName = "id", name = "wallet")
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Wallet wallet;
 	@NotNull
 	private Date date;

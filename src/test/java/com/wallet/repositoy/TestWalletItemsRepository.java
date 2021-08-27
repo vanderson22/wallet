@@ -1,12 +1,14 @@
 package com.wallet.repositoy;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Optional;
 
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import org.junit.After;
@@ -15,6 +17,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -84,13 +88,78 @@ public class TestWalletItemsRepository {
 		WalletItem wi = new WalletItem(null, savedWallet, DATE, TYPE, DESCRIPTION, VALUE);
 		WalletItem wiSaved = repository.save(wi);
 
-		TypeEnum typeEnum = TypeEnum.valueOf("EN");
-		String DESC = typeEnum.getValue();
-
 		assertNotNull(wiSaved);
 		assertEquals(DESCRIPTION, wiSaved.getDescription());
 		assertEquals(VALUE, wiSaved.getValue());
 		assertEquals(TYPE, wiSaved.getType());
+	}
+
+	@Test
+	public void testUpdate() {
+
+		WalletItem wi = repository.findById(vWalletItemmId).get();
+		wi.setDescription("Descrição atualizada");
+		WalletItem wiSaved = repository.save(wi);
+
+		WalletItem walletItemAtualizado = repository.findById(vWalletItemmId).get();
+
+		assertEquals(walletItemAtualizado.getDescription(), wiSaved.getDescription());
+	}
+
+	@Test
+	public void testRemove() {
+
+		repository.deleteById(vWalletItemmId);
+		wRepository.deleteById(walletID);
+
+		Optional<Wallet> optWallet = wRepository.findById(walletID);
+		Optional<WalletItem> optWalletItem = repository.findById(vWalletItemmId);
+
+		assertFalse(optWallet.isPresent());
+		assertFalse(optWalletItem.isPresent());
+	}
+
+	@Test
+	public void testFindByIdAndDate() {
+
+		Optional<WalletItem> findById = repository.findByIdAndDate(vWalletItemmId, DATE);
+
+		assertTrue(findById.isPresent());
+
+	}
+
+	@Test
+	public void testFindByIdAndDateGreaterThanEqualAndDateLessThanEqual() {
+
+		Optional<WalletItem> findById = repository.findByIdAndDateGreaterThanEqualAndDateLessThanEqual(vWalletItemmId,
+				DATE, new Date());
+		assertTrue(findById.isPresent());
+
+	}
+
+	@Test
+	public void testFindByIdAndDateGreaterThanEqualAndDateLessThanEqualPage() {
+
+		Pageable pageable = Pageable.ofSize(10);
+		Page<WalletItem> page = repository.findByWalletIdAndDateGreaterThanEqualAndDateLessThanEqual(walletID, DATE,
+				new Date(), pageable);
+
+		WalletItem walletItem = repository.findById(vWalletItemmId).get();
+
+		assertFalse(page.getContent().isEmpty());
+		assertEquals(walletItem, page.getContent().get(0));
+
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testUpdateException() {
+		try {
+
+			repository.findById(2L).get();
+		} catch (Exception e) {
+			throw new RuntimeException("Id não encontrado");
+		}
+
 	}
 
 	@Test
