@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.ConstraintViolationException;
@@ -148,6 +149,56 @@ public class TestWalletItemsRepository {
 
 		assertFalse(page.getContent().isEmpty());
 		assertEquals(walletItem, page.getContent().get(0));
+
+	}
+
+	@Test
+	public void testFindByType() {
+		List<WalletItem> walletItem = repository.findByWalletIdAndType(walletID, TYPE);
+
+		assertNotNull(walletItem);
+		assertEquals(walletItem.get(0).getId(), vWalletItemmId);
+		assertEquals(walletItem.get(0).getId(), vWalletItemmId);
+
+	}
+
+	@Test
+	public void testSumByWallet() {
+
+		Wallet vWallet = wRepository.findById(walletID).get();
+		WalletItem walletItem = repository.findById(vWalletItemmId).get();
+
+		WalletItem wi = new WalletItem(null, vWallet, DATE, TYPE, DESCRIPTION, BigDecimal.valueOf(150.80));
+
+		BigDecimal soma = repository.sumByWalletId(walletID);
+
+		assertEquals(wi.getValue().add(walletItem.getValue()), soma);
+
+	}
+
+	@Test
+	public void testFinByIdTypeSD() {
+		Wallet vWallet = new Wallet();
+		vWallet.setName("Carteira - 1 ");
+		vWallet.setValue(BigDecimal.valueOf(500));
+		vWallet = wRepository.save(vWallet);
+
+		WalletItem wi = new WalletItem(null, vWallet, DATE, TypeEnum.SD, DESCRIPTION, VALUE);
+		WalletItem wiSaved = repository.save(wi);
+
+		List<WalletItem> walletItem = repository.findByWalletIdAndType(wiSaved.getWallet().getId(), TypeEnum.SD);
+
+		assertEquals(walletItem.get(0).getType(), TypeEnum.SD);
+		assertEquals(walletItem.get(0).getId(), wiSaved.getId());
+
+	}
+
+	@Test
+	public void testFinByIdTypeEmpty() {
+
+		List<WalletItem> walletItem = repository.findByWalletIdAndType(walletID, TypeEnum.SD);
+
+		assertTrue(walletItem.isEmpty());
 
 	}
 
