@@ -14,8 +14,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>wallet</name>
 	<description>Carteora de cliente</description>
+
 	<properties>
 		<java.version>11</java.version>
+		<swagger.version>2.9.2</swagger.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -81,6 +83,24 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
+		<!-- SWAGGER -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${swagger.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${swagger.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-data-rest</artifactId>
+			<version>${swagger.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

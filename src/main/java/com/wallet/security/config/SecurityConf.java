@@ -22,7 +22,7 @@ public class SecurityConf extends WebSecurityConfigurerAdapter{
 	protected void configure(HttpSecurity auth) throws Exception {
 		
 		//desabilita recursos para permitir o h2 em ambiente test.
-		if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
+		if (Arrays.asList(env.getActiveProfiles()).contains("dev")) {
 			auth.headers().frameOptions().disable();
 		}
 
@@ -34,7 +34,7 @@ public class SecurityConf extends WebSecurityConfigurerAdapter{
 	       					.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		       			.and()
 				       .authorizeRequests()
-				       	.antMatchers("**")
+				       .antMatchers("**","/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**")
 				       	.permitAll()
 				       		.anyRequest().authenticated();
 		       
