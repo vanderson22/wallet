@@ -17,9 +17,6 @@ public class UserWalletValidator implements ConstraintValidator<UserWalletInsert
 	@Autowired
 	private UserService uService;
 
-//	@Autowired
-//	private WalletService wService;
-
 	@Override
 	public boolean isValid(UserWalletDto value, ConstraintValidatorContext context) {
 		boolean isValidDto = true;

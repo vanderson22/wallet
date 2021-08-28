@@ -1,8 +1,11 @@
 package com.wallet.services.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.wallet.models.User;
@@ -19,6 +22,7 @@ public class UserServiceImpl implements UserService {
 		return repository.findByEmail(string);
 	}
 
+	@CacheEvict(value="User", allEntries=true)
 	@Override
 	public User save(User user) {
 		return repository.save(user);
@@ -27,6 +31,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Optional<User> findById(Long user) {
 		return repository.findById(user);
+	}
+
+	@Cacheable("User")
+	@Override
+	public List<User> findAll() {
+		return repository.findAll();
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.wallet.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.wallet.models.User;
@@ -11,5 +12,7 @@ public interface UserService {
 	User save(User user);
 
 	Optional<User> findById(Long user);
+
+	List<User> findAll();
 
 }

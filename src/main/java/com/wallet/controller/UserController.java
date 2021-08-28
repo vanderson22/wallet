@@ -1,9 +1,12 @@
 package com.wallet.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wallet.models.User;
@@ -21,9 +23,6 @@ import com.wallet.models.response.Response;
 import com.wallet.services.UserService;
 import com.wallet.util.Bcrypt;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("/user")
@@ -36,17 +35,19 @@ public class UserController {
 
 	BCryptPasswordEncoder bp = new BCryptPasswordEncoder();
 
+	
 	@GetMapping
-	public ResponseEntity<Response<UserDto>> findAll() {
-		return null;
+	public ResponseEntity<Response<List<UserDto>>> findAll() {
+		Response<List<UserDto>> response = new Response<>();
+		List<User> users = service.findAll();
+		List<UserDto> list = users.stream().map(x -> convertUserToDto(x)).toList();
+
+		response.setData(list);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
-	@ApiOperation(value = "Create new User ", tags = { "user-controller" })
-	@ApiResponses(value = { @ApiResponse(code = 201, message = "created"),
-			@ApiResponse(code = 400, message = "Invalid input"), @ApiResponse(code = 409, message = "already exists") })
-	@PostMapping()
-	public @ResponseBody ResponseEntity<Response<UserDto>> create(@Valid @RequestBody UserDto dto,
-			BindingResult result) {
+	@PostMapping
+	public ResponseEntity<Response<UserDto>> create(@Valid @RequestBody UserDto dto, BindingResult result) {
 
 		Response<UserDto> response = new Response<>();
 
