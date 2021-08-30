@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -141,7 +142,7 @@ public class TestWalletItemsRepository {
 	@Test
 	public void testFindByIdAndDateGreaterThanEqualAndDateLessThanEqualPage() {
 
-		Pageable pageable = Pageable.ofSize(10);
+		Pageable pageable = PageRequest.of(1, 1);
 		Page<WalletItem> page = repository.findByWalletIdAndDateGreaterThanEqualAndDateLessThanEqual(walletID, DATE,
 				new Date(), pageable);
 
