@@ -6,7 +6,6 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -38,6 +37,7 @@ public class UserController {
 	
 	@GetMapping
 	public ResponseEntity<Response<List<UserDto>>> findAll() {
+		LOGGER.info("Buscando carteiras na base de dados...");
 		Response<List<UserDto>> response = new Response<>();
 		List<User> users = service.findAll();
 		List<UserDto> list = users.stream().map(x -> convertUserToDto(x)).toList();
