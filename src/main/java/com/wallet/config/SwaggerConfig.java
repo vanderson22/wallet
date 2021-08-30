@@ -18,15 +18,15 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
-@Profile("dev")
+@Profile({"dev"  , "test" , "prod"})
 @EnableSwagger2
 @ConditionalOnProperty(name="app.api.swagger.enable", havingValue = "true", matchIfMissing = false)
 public class SwaggerConfig {
 
+	private static final String BASE_PACKAGE = "com.wallet.controller";
 	private String version;
 	private String title;
 	private String description;
-	private String basePackage;
 	private String contactName;
 	private String contactEmail;
 	
@@ -34,7 +34,7 @@ public class SwaggerConfig {
 		public Docket api() {
 			return new Docket(DocumentationType.SWAGGER_2)
 				.select()
-				.apis(RequestHandlerSelectors.basePackage("com.wallet.controller"))
+				.apis(RequestHandlerSelectors.basePackage(BASE_PACKAGE))
 				.paths(PathSelectors.any())
 				.build()
 				.directModelSubstitute(LocalDate.class, java.sql.Date.class)
