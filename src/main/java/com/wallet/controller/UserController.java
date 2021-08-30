@@ -40,7 +40,7 @@ public class UserController {
 		LOGGER.info("Buscando carteiras na base de dados...");
 		Response<List<UserDto>> response = new Response<>();
 		List<User> users = service.findAll();
-		List<UserDto> list = users.stream().map(x -> convertUserToDto(x)).toList();
+		List<UserDto> list = users.stream().map(x -> convertUserToDto(x) ).toList();
 
 		response.setData(list);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
